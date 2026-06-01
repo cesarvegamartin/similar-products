@@ -1,6 +1,7 @@
 package com.similar_products.product.application;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,14 @@ public class GetSimilarProductsService implements GetSimilarProductsUseCase {
         }
 
         return similarIds.stream()
-            .map(productDetailPort::getProductById)
+            .map(id -> {
+                try {
+                    return productDetailPort.getProductById(id);
+                } catch (Exception e) {
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
             .toList();
     }    
 }

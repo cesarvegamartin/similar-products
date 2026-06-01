@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -26,9 +26,10 @@ public class SimilarProductsApiClient implements SimilarProductsPort {
     public List<String> getSimilarIds(String productId) {
         return webClient.get().uri("/product/{id}/similarids", productId)
             .retrieve()
-            .onStatus(status -> status == HttpStatus.NOT_FOUND, response -> Mono.error(new EntityNotFoundException("Product with id " + productId + " not found")))
-            .onStatus(status -> status.is5xxServerError(), response -> Mono.error(new ExternalServiceException("Error calling external service")))
-            .bodyToMono(new ParameterizedTypeReference<List<String>>() {}).block();
+            .onStatus(HttpStatusCode::is4xxClientError, response -> Mono.error(new EntityNotFoundException("Product similar with id " + productId + " not found")))
+            .onStatus(HttpStatusCode::is5xxServerError, response -> Mono.error(new ExternalServiceException("Error calling external service")))
+            .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+            .block();
     }
 
 }
