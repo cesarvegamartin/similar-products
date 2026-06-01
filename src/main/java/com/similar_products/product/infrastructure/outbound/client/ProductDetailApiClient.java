@@ -1,5 +1,6 @@
 package com.similar_products.product.infrastructure.outbound.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -11,8 +12,8 @@ public class ProductDetailApiClient implements ProductDetailPort {
 
     private final WebClient webClient;
 
-    public ProductDetailApiClient(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl("http://localhost:3001").build();
+    public ProductDetailApiClient(WebClient.Builder builder, @Value("${external.simulado.base-url}") String baseUrl) {
+        this.webClient = builder.baseUrl(baseUrl).build();
     }
 
     public Product getProductById(String productId) {

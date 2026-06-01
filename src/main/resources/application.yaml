@@ -1,3 +1,10 @@
 spring:
   application:
     name: similar-products
+
+server:
+  port: 5000
+
+external:
+  simulado:
+    base-url: ${SIMULADO_URL:http://simulado:80}

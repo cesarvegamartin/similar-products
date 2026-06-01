@@ -2,6 +2,7 @@ package com.similar_products.product.infrastructure.outbound.client;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,8 +14,8 @@ public class SimilarProductsApiClient implements SimilarProductsPort {
 
     private final WebClient webClient;
 
-    public SimilarProductsApiClient(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl("http://localhost:3001").build();
+    public SimilarProductsApiClient(WebClient.Builder builder, @Value("${external.simulado.base-url}") String baseUrl) {
+        this.webClient = builder.baseUrl(baseUrl).build();
     }
 
     public List<String> getSimilarIds(String productId) {
