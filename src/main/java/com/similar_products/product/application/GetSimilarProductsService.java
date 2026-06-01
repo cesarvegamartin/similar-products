@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.similar_products.infrastructure.rest.error.ResourceNotFoundException;
 import com.similar_products.product.application.port.out.ProductDetailPort;
 import com.similar_products.product.application.port.out.SimilarProductsPort;
 import com.similar_products.product.domain.Product;
@@ -19,7 +20,13 @@ public class GetSimilarProductsService implements GetSimilarProductsUseCase {
 
     public List<Product> execute(String productId) {
         List<String> similarIds = similarProductsPort.getSimilarIds(productId);
-        return similarIds.stream().map(productDetailPort::getProductById).toList();
+
+        if (similarIds.isEmpty()) {
+            return List.of();
+        }
+
+        return similarIds.stream()
+            .map(productDetailPort::getProductById)
+            .toList();
     }    
-    
 }
